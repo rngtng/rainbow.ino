@@ -23,10 +23,10 @@
 Rainbowduino rainbow = Rainbowduino();  //max 10 Frames
 
 //running mode
-byte running;
+uint8_t running;
 word current_delay;
 word current_speed;
-byte brightness;
+uint8_t brightness;
 
 void setup_timer()
 {
@@ -76,8 +76,8 @@ void loop() {
 
 void check_serial() {
   if(!Serial.available()) return;
-  byte received = read_serial();
-  byte param;
+  uint8_t received = read_serial();
+  uint8_t param;
   if(received == COMMAND) {
     received = wait_and_read_serial();
     switch(received) {
@@ -121,14 +121,14 @@ void check_serial() {
     case BUFFER_SET_AT:
       param = wait_and_read_serial(); //read adress value
       ok(received, NUM_ROWS);
-      for(byte row = 0; row < NUM_ROWS; row++) {
+      for(uint8_t row = 0; row < NUM_ROWS; row++) {
         rainbow.set_frame_row(param, row, wait_and_read_serial());
       }
       break;
     case BUFFER_GET_AT:
       param = wait_and_read_serial(); //read adress value
       ok(received, NUM_ROWS);
-      for(byte row = 0; row < NUM_ROWS; row++) {
+      for(uint8_t row = 0; row < NUM_ROWS; row++) {
         Serial.write(rainbow.get_frame_row(param, row));
       }
       break;
@@ -169,16 +169,16 @@ void check_serial() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-byte read_serial() {
+uint8_t read_serial() {
   return Serial.read();
 }
 
-byte wait_and_read_serial() {
+uint8_t wait_and_read_serial() {
   while( !Serial.available() );
   return read_serial();
 }
 
-boolean ok(byte command, byte param) {
+boolean ok(uint8_t command, uint8_t param) {
   Serial.flush();
   Serial.write(OK);
   Serial.write(command);
@@ -190,7 +190,7 @@ void save_to_eeprom(word addr) {
   word num_frames = rainbow.get_num_frames();
   EEPROM.write(addr++, num_frames);
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
-    for( byte row = 0; row < NUM_ROWS; row++ ) {
+    for( uint8_t row = 0; row < NUM_ROWS; row++ ) {
       EEPROM.write(addr++, rainbow.get_frame_row(frame_nr, row));
     }
   }
@@ -200,7 +200,7 @@ void save_to_eeprom(word addr) {
 void load_from_eeprom(word addr) {
   word num_frames = EEPROM.read(addr++);
   for( word frame_nr = 0; frame_nr < num_frames; frame_nr++ ) {
-    for( byte row = 0; row < NUM_ROWS; row++ ) {
+    for( uint8_t row = 0; row < NUM_ROWS; row++ ) {
       rainbow.set_frame_row(frame_nr, row, EEPROM.read(addr++));
     }
   }
