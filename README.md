@@ -10,5 +10,7 @@ This is the firmware to upload on your RainbowDuino to make it work with the [Ra
 
 ## Install
 
-Download the MsTimer2 Library here:
-http://www.arduino.cc/playground/Main/MsTimer2
+when cloning, make sure to rename folder to `rainbow` as Arudino requires foldername to be same as filename.
+
+`git clone git://github.com/rngtng/rainbow.ino.git rainbow`
+
