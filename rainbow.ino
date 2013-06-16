@@ -4,6 +4,7 @@
  *
  */
 
+#include <Wire.h>
 #include <EEPROM.h>
 
 /*
@@ -14,11 +15,11 @@
 #include "Rainbowduino.h"
 #include "RCodes.h" //API Codes
 
-#define BAUD_RATE 57600
+// #define BAUD_RATE 57600
 
 #define DEFAULT_SPEED 150
-#define DEFAULT_BRIGHTNESS 2
-#define SPEED_FACTOR 100
+#define DEFAULT_BRIGHTNESS 1
+#define SPEED_FACTOR 10000
 
 Rainbowduino rainbow = Rainbowduino();  //max 10 Frames
 
@@ -27,6 +28,8 @@ byte running;
 word current_delay;
 word current_speed;
 byte brightness;
+
+byte ok_command, ok_param;
 
 void setup_timer()
 {
@@ -47,11 +50,24 @@ ISR(TIMER2_OVF_vect) {
 }
 
 void setup() {
-  Serial.begin(BAUD_RATE);
+  //Serial.begin(BAUD_RATE);
+  Wire.begin(3);
+  Wire.onReceive(receiveEvent); // register event
+  Wire.onRequest(requestEvent);
   reset();
   load_from_eeprom(0);
-  running = true;
+  //running = true;
   setup_timer();
+}
+
+void receiveEvent(int howMany) {
+  check_serial();
+}
+
+void requestEvent()
+{
+ char m[] = {OK, ok_command, ok_param};
+ Wire.send(m);
 }
 
 void reset() {
@@ -63,7 +79,7 @@ void reset() {
 }
 
 void loop() {
-  check_serial();
+  //check_serial();
   // next frame
   if(running) {
     if(current_delay < 1) {
@@ -75,7 +91,7 @@ void loop() {
 }
 
 void check_serial() {
-  if(!Serial.available()) return;
+  //if(!Wire.available()) return;
   byte received = read_serial();
   byte param;
   if(received == COMMAND) {
@@ -129,7 +145,7 @@ void check_serial() {
       param = wait_and_read_serial(); //read adress value
       ok(received, NUM_ROWS);
       for(byte row = 0; row < NUM_ROWS; row++) {
-        Serial.write(rainbow.get_frame_row(param, row));
+        //com.send(rainbow.get_frame_row(param, row));
       }
       break;
     case BUFFER_LENGTH:
@@ -170,19 +186,23 @@ void check_serial() {
 
 ///////////////////////////////////////////////////////////////////////////
 byte read_serial() {
-  return Serial.read();
+  return Wire.receive();
 }
 
 byte wait_and_read_serial() {
-  while( !Serial.available() );
+  while( !Wire.available() );
   return read_serial();
 }
 
 boolean ok(byte command, byte param) {
-  Serial.flush();
-  Serial.write(OK);
-  Serial.write(command);
-  Serial.write(param);
+  ok_command = command;
+  ok_param = param;
+  /* Serial.flush();
+  com.beginTransmission();
+  com.send(OK);
+  com.send(command);
+  com.send(param);
+  com.endTransmission(); */
 }
 
 ///////////////////////////////////////////////////////////////////////////
