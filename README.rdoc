@@ -1,0 +1,74 @@
+= rainbowduino
+
+This library provides an interface to control {Seeedstudios Rainbowduino}[http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html], a 8x8 RGB LED driver based on the Arduino Project. This Processing library removes the need of writing any code for the device itself. Just upload the included firmware and add the library to your Processing IDE - you're set up!
+
+
+== Features
+* complete API to control major function (to be extended, maybe changed as well)
+* 3 Bit Color support
+* Realtime update of the RGB LED Matrix.
+* Up to 10 Buffers which can written/read via serial and saved/loaded via EEPROM. (mind: due to 256kb memory only up to 10 frames can be stored by now).
+* Standalone mode with custom looping speed
+* Brightness control
+
+
+== Requirements
+
+* obviously a Rainbowduino with USB (Serial) connection (I2C not yet supported)
+
+
+== Installation
+
+Download, unzip and put the extracted rainbowudino folder into the libraries folder of your processing sketches. Reference and examples are included in the folder as well. Open the firmware/firmware.pde file with the Arduino IDE and upload it to your Rainbowduino.
+
+
+== Usage
+
+Basically, create an instance of the Rainbowduino class and init the Serialport - you're ready to go. This is a simple example switches all LEDs to green, resets the rainbowudino and starts over again:
+
+  import processing.serial.*;
+  import com.rngtng.rainbowduino.*;
+  
+  Rainbowduino device;
+  
+  void setup() {
+    device = new Rainbowduino(this);
+    device.initPort();
+  }
+  
+  void draw() {
+    //send green frame
+    device.bufferSetAt(0, new int[]{255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0});
+    delay(1000);
+    device.reset();
+    delay(1000);
+  }
+
+For more details, see the examples.
+
+== Near future plans
+ * extend API, set ROW and set Pixel
+ * better color abstraction (CONST instead of numbers)
+ * support 12bit color
+ * I2C support
+ * use entities instead of Consts??
+ * add test (how to do this with processing??)
+
+== Changelog
+
+=== v0.1.0
+
+* specified API
+* first implementation
+
+
+== Copyright
+The MIT License
+
+Copyright © 2009 RngTng, Tobias Bielohlawek
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
