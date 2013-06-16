@@ -1,18 +1,11 @@
 /*
- * Rainbowduino.h version 2.0 - A driver to run Seeedstudio 8x8 RBG LED Matrix
- * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com
+ * Rainbowduino.h version 3.0beta - A driver to run Seeedstudio 8x8 RBG LED Matrix
+ * Copyright (c) 2013 Tobias Bielohlawek -> http://www.rngtng.com
  *
  */
 
 // include this library's description file
 #include "Rainbowduino.h"
-
-// include core Wiring API
-#include "WProgram.h"
-
-// include description files for other libraries used (if any)
-#include "pins_arduino.h"
-#include "WConstants.h"
 
 // Constructor /////////////////////////////////////////////////////////////////
 // Function that handles the creation and setup of instances
@@ -45,7 +38,7 @@ void Rainbowduino::set_current_frame_nr(byte frame_nr) {
 
 byte Rainbowduino::get_current_frame_nr() {
   return current_frame_nr;
-} 
+}
 
 void Rainbowduino::next_frame() {
   current_frame_nr++;
@@ -100,14 +93,14 @@ void Rainbowduino::draw(byte level) {
   draw_row(current_row / 3, level, frame_buffer[off++], frame_buffer[off++], frame_buffer[off++]);
   if(current_row >= NUM_ROWS - 1) {
     current_row =  0;
-    current_level = (current_level >= NUM_LEVEL - 1) ? 0 : current_level+1;    
+    current_level = (current_level >= NUM_LEVEL - 1) ? 0 : current_level+1;
   }
   else {
     current_row = current_row + 3;
   }
 }
 
-//--- colors to shift: blue, red,  green 
+//--- colors to shift: blue, red,  green
 void Rainbowduino::draw_row(byte row, byte level, byte r, byte b, byte g) {
   disable_oe;
   enable_row(row);
@@ -134,7 +127,7 @@ void Rainbowduino::draw_color(byte c) {
 
 //==============================================================
 void Rainbowduino::enable_row(byte row) {   // open the scaning row
-  //better? shift word value, take upper and lower part!?  
+  //better? shift word value, take upper and lower part!?
   if(row < 3) {
     PORTB  = (PINB & ~0x07) | 0x04 >> row;
     PORTD  = (PIND & ~0xF8);

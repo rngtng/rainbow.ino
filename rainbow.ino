@@ -1,14 +1,14 @@
 /*
- * Firmware.h version 2.0 - to run with Rainbowduino/Arduino Processing library
- * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com/mtxcontrol
+ * Firmware.h version 3.0beta - to run with Rainbowduino/Arduino Processing library
+ * Copyright (c) 2013 Tobias Bielohlawek -> http://www.rngtng.com/mtxcontrol
  *
  */
 
 #include <EEPROM.h>
 
-/* 
+/*
  * Rainbowduino.h && Rainbowduino.cpp are symbolically linked to make it compile right from the beginning.
- * It's way more clean if you move "rainbowduino" Folder (including Rainbowduino.h && Rainbowduino.cpp) to you Arduino library 
+ * It's way more clean if you move "rainbowduino" Folder (including Rainbowduino.h && Rainbowduino.cpp) to you Arduino library
  * and remove those links
  */
 #include "Rainbowduino.h"
@@ -28,16 +28,16 @@ word current_delay;
 word current_speed;
 byte brightness;
 
-void setup_timer()               
+void setup_timer()
 {
-  TCCR2A |= (1 << WGM21) | (1 << WGM20);   
+  TCCR2A |= (1 << WGM21) | (1 << WGM20);
   TCCR2B |= (1<<CS22); // by clk/64
   TCCR2B &= ~((1<<CS21) | (1<<CS20));   // by clk/64
   TCCR2B &= ~((1<<WGM21) | (1<<WGM20));   // Use normal mode
   ASSR |= (0<<AS2);       // Use internal clock - external clock not used in Arduino
   TIMSK2 |= (1<<TOIE2) | (0<<OCIE2B);   //Timer2 Overflow Interrupt Enable
   TCNT2 = 0xE7; //gamma value
-  sei();   
+  sei();
 }
 
 //Timer2 overflow interrupt vector handler
@@ -99,7 +99,7 @@ void check_serial() {
     case START:
       running = true;
       ok(received, rainbow.get_current_frame_nr());
-      break;            
+      break;
     case FRAME_SET:
       rainbow.set_current_frame_nr(wait_and_read_serial());
       ok(received, rainbow.get_current_frame_nr());
@@ -132,17 +132,17 @@ void check_serial() {
         Serial.write(rainbow.get_frame_row(param, row));
       }
       break;
-    case BUFFER_LENGTH:      
+    case BUFFER_LENGTH:
       ok(received, rainbow.get_num_frames());
       break;
-    case BUFFER_SAVE:    
-      save_to_eeprom(0);   
+    case BUFFER_SAVE:
+      save_to_eeprom(0);
       ok(received, rainbow.get_num_frames());
-      break;      
-    case BUFFER_LOAD:      
+      break;
+    case BUFFER_LOAD:
       load_from_eeprom(0);
       ok(received, rainbow.get_num_frames());
-      break;      
+      break;
 
       /* Speed Control */
     case SPEED_SET:
@@ -153,14 +153,14 @@ void check_serial() {
     case SPEED_GET:
       ok(received, current_speed / SPEED_FACTOR);
       break;
-    case SPEED_INC:  
+    case SPEED_INC:
       if(current_speed > SPEED_FACTOR) current_speed -= SPEED_FACTOR;
       ok(received, current_speed / SPEED_FACTOR);
       break;
-    case SPEED_DEC:  
+    case SPEED_DEC:
       current_speed += SPEED_FACTOR;
       ok(received, current_speed / SPEED_FACTOR);
-      break;    
+      break;
     default:
       //send error
     break;

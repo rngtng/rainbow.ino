@@ -1,8 +1,8 @@
-# rainbowduino.ino
+# rainbow.ino
 
 Arduino Firmware for rainbowduino processing library
 
-version 2.0 - 30. Dec 2009
+version 3.0beta - 2013
 
 ## About
 

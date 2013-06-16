@@ -1,7 +1,7 @@
 /*
- * Rainbowduino.h version 2.0 - A driver to run Seeedstudio 8x8 RBG LED Matrix
+ * Rainbowduino.h version 3.0beta - A driver to run Seeedstudio 8x8 RBG LED Matrix
  * Based on Rainbow.h by Seedstudio.com -> http://www.seeedstudio.com/depot/rainbowduino-led-driver-platform-plug-and-shine-p-371.html
- * Copyright (c) 2009 Tobias Bielohlawek -> http://www.rngtng.com
+ * Copyright (c) 2013 Tobias Bielohlawek -> http://www.rngtng.com
  *
  */
 
@@ -9,7 +9,7 @@
 #define RAINBOWDUINO_h
 
 // include types & constants of Wiring core API
-#include <WProgram.h>
+#include "Arduino.h"
 
 //=============================================
 //MBI5168
@@ -35,14 +35,14 @@
 #define NUM_ROWS 24 // 3 BYTES per ROW  x 8 Lines = 24Bytes
 #define MAX_NUM_FRAMES 10 // = 240Bytes
 
-#define NUM_LEVEL 16 
+#define NUM_LEVEL 16
 
 class Rainbowduino {
 
 public:
   byte frame_buffer[NUM_ROWS*MAX_NUM_FRAMES]; // [FRAME_BUFFER_SIZE]; //size of EEPROM -> to read faster??
   Rainbowduino();
-  
+
   /////////////////////////
   void reset();
   byte get_num_frames();
